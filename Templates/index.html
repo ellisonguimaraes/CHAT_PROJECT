@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDCHAT: {{user.name.split('.')[0]}}</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <!--<link rel="stylesheet" href="..\Static\css\style.css">-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <section class="main">
+        <section class="list_friends">
+            <ul>
+                {% for u in users %}
+                    <a href="{{url_for('homepage', id=u.id)}}">
+                        <li id="{{'active' if u.id == user.id}}">
+                            <h4>{{u.name.split('.')[0]}}</h4>
+                            {% if u.status == 1 %}
+                                <p><b>•</b> Online</p>
+                            {% else %}
+                                <p><b id="offline">•</b> Offline</p>
+                            {% endif %}
+                        </li>
+                    </a>
+                {%endfor%}
+            </ul>
+        </section>
+
+        <section class="main_messages">
+            <section class="messages">
+                {% for m in messages %}
+                <section class="message" id="destinatario">
+                    <h5>{{user.name.split('.')[0]}} <span> ~ {{m.date}}</span></h5>
+                    
+                    <p>{{m.msg}}</p>
+                </section>
+                {% endfor %}
+            </section>
+
+            <section class="float_box">
+                <form>
+                    <input type="text" placeholder="Digite uma mensagem"/>
+                    <button type="submit">Enviar</button>
+                </form>
+            </section>
+        </section>
+
+    </section>
+
+</body>
+</html>

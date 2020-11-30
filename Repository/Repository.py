@@ -70,6 +70,20 @@ class UserRepository:
 
         return None
 
+    @staticmethod
+    def get(id):
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM User WHERE id == ?", (id,))
+        result = cursor.fetchone()
+        conn.close()
+
+        if result is not None:
+            return User(result[0], result[1], result[2], result[3], result[4])
+
+        return None
+
 
 class MessageRepository:
     @staticmethod
@@ -82,12 +96,15 @@ class MessageRepository:
         conn.close()
 
     @staticmethod
-    def get_all():
+    def get_all(id:None):
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
         all_messages = []
 
-        cursor.execute("SELECT * FROM Message;")
+        if id is None:
+            cursor.execute("SELECT * FROM Message;")
+        else:
+            cursor.execute("SELECT * FROM Message WHERE id_user = ?", (id,))
 
         for l in cursor.fetchall():
             message = Message(l[0], l[1], l[2], l[3])
@@ -127,7 +144,7 @@ class MessageRepository:
 if __name__ == "__main__":
     conn = sqlite3.connect("../database.db")
     cursor = conn.cursor()
-
+    '''
     cursor.execute("""
         CREATE TABLE User (
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -147,9 +164,10 @@ if __name__ == "__main__":
                 FOREIGN KEY(id_user) REFERENCES User(id)
             );
     """)
-
+'''
     '''
     UserRepository.save(User(None, "rebeca", "192.168.1.150", 4890, 0))
+    
     UserRepository.save(User(None, "ellison", "192.168.1.101", 5050, 1))
     
     MessageRepository.save(Message(None, "Olá, tudo bem?", datetime.now(), 3))
