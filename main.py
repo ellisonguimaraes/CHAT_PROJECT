@@ -1,14 +1,13 @@
-import Zeroconf.Discovery as des
-import Zeroconf.Announce as anu
+import Zeroconf.Discovery as dis
+import Zeroconf.Announce as ann
 from configure_data import *
-import sys
 
 
 if __name__ == '__main__':
 
     # Configure Discovery/Announce
-    discovery = des.ConfigureDiscovery(TYPE_SERVICE)
-    announce = anu.ConfigureAnnounce(ip=MY_IP, port=MY_PORT, name=MY_NAME, name_service=TYPE_SERVICE)
+    discovery = dis.ConfigureDiscovery(TYPE_SERVICE)
+    announce = ann.ConfigureAnnounce(ip=MY_IP, port=MY_PORT, name=MY_NAME, name_service=TYPE_SERVICE)
 
     # Start Discovery/Announce
     discovery.start()

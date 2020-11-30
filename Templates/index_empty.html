@@ -12,24 +12,30 @@
 
     <section class="main">
         <section class="list_friends">
+            <h1 id="name">Olá {{my_name}}!</h1>
             <ul>
-                {% for u in users %}
-                    <a href="{{url_for('homepage', id=u.id)}}">
-                        <li>
-                            <h4>{{u.name.split('.')[0]}}</h4>
-                            {% if u.status == 1 %}
-                                <p><b>•</b> Online</p>
-                            {% else %}
-                                <p><b id="offline">•</b> Offline</p>
-                            {% endif %}
-                        </li>
-                    </a>
-                {%endfor%}
+                {% if users|length > 0 %}
+                    {% for u in users %}
+                        <a href="{{url_for('homepage', id=u.id)}}">
+                            <li>
+                                <h4>{{u.name.split('.')[0]}}</h4>
+                                {% if u.status == 1 %}
+                                    <p><b>•</b> Online</p>
+                                {% else %}
+                                    <p><b id="offline">•</b> Offline</p>
+                                {% endif %}
+                            </li>
+                        </a>
+                    {%endfor%}
+                {%else%}
+                    <li><p id="nolink">Não há contato.</p></li>
+                {%endif%}
             </ul>
         </section>
 
-        <section class="main_messages">
-            Selecione
+        <section class="welcome">
+            <h2>Seja bem vindo <b>{{my_name}}</b>!</h2>
+            <h2></h2>
         </section>
 
     </section>

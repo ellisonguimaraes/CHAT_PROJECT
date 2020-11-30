@@ -4,27 +4,33 @@
     <meta charset="UTF-8">
     <title>SDCHAT: {{user.name.split('.')[0]}}</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
-    <!--<link rel="stylesheet" href="..\Static\css\style.css">-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <section class="main">
+
         <section class="list_friends">
+            <h1 id="name">Olá {{my_name}}!</h1>
             <ul>
-                {% for u in users %}
-                    <a href="{{url_for('homepage', id=u.id)}}">
-                        <li id="{{'active' if u.id == user.id}}">
-                            <h4>{{u.name.split('.')[0]}}</h4>
-                            {% if u.status == 1 %}
-                                <p><b>•</b> Online</p>
-                            {% else %}
-                                <p><b id="offline">•</b> Offline</p>
-                            {% endif %}
-                        </li>
-                    </a>
-                {%endfor%}
+                {% if users|length > 0 %}
+                    {% for u in users %}
+                        <a href="{{url_for('homepage', id=u.id)}}">
+                            <li id="{{'active' if u.id == user.id}}">
+                                <h4>{{u.name.split('.')[0]}}</h4>
+                                {% if u.status == 1 %}
+                                    <p><b>•</b> Online</p>
+                                {% else %}
+                                    <p><b id="offline">•</b> Offline</p>
+                                {% endif %}
+                            </li>
+                        </a>
+                    {%endfor%}
+
+                {%else%}
+                    <li><p>Não há contato.</p></li>
+                {%endif%}
             </ul>
         </section>
 
@@ -32,7 +38,7 @@
             <section class="messages">
                 {% for m in messages %}
                 <section class="message" id="{{'destinatario' if m.recv == 1 else 'remetente'}}">
-                    <h5>{{user.name.split('.')[0] if m.recv == 1 else 'EU'}} <span> ~ {{m.date}}</span></h5>
+                    <h5>{{user.name.split('.')[0] if m.recv == 1 else 'EU'}} <span> ~ {{m.date[0:16]}}</span></h5>
                     
                     <p>{{m.msg}}</p>
                 </section>
@@ -41,7 +47,7 @@
 
             <section class="float_box">
                 <form action="{{ url_for('send_message', id=user.id)}}" method="post">
-                    <input type="text" name="searchMessage" placeholder="Digite uma mensagem"/>
+                    <input type="text" name="searchMessage" placeholder="Digite uma mensagem" required/>
                     <button type="submit">Enviar</button>
                 </form>
             </section>

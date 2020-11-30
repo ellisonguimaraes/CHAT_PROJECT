@@ -142,7 +142,7 @@ class MessageRepository:
 
 
 if __name__ == "__main__":
-    '''
+
     conn = sqlite3.connect("../database.db")
     cursor = conn.cursor()
 
@@ -166,7 +166,7 @@ if __name__ == "__main__":
                 FOREIGN KEY(id_user) REFERENCES User(id)
             );
     """)
-    
+    '''
     UserRepository.save(User(None, "Rebeca", "192.168.1.150", 4890, 0))
     UserRepository.save(User(None, "Ellison", "192.168.1.101", 5050, 1))
 

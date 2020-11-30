@@ -4,7 +4,6 @@ from configure_data import *
 from Repository.Repository import MessageRepository, UserRepository
 from Models.Message import Message
 import datetime as dt
-from random import choice
 from Models.User import User
 
 
@@ -14,10 +13,11 @@ app = Flask("sd_chat", template_folder="Templates", static_folder="static")
 @app.route("/", methods=["GET"])
 @app.route("/<id>", methods=["GET"])
 def homepage(id=None):
-    users = [i for i in UserRepository.get_all() if i.name != MY_NAME + '.' + TYPE_SERVICE]
+    users = sorted([i for i in UserRepository.get_all() if i.name != MY_NAME + '.' + TYPE_SERVICE],
+                   key=lambda x: x.status, reverse=True)
 
     if id is None:
-        return render_template('index_empty.html', users=users)
+        return render_template('index_empty.html', my_name=MY_NAME.split('.')[0], users=users)
 
     else:
         user = UserRepository.get(id)
@@ -27,7 +27,7 @@ def homepage(id=None):
 
         messages = MessageRepository.get_all(user.id)
 
-        return render_template('index.html', users=users, user=user, messages=messages)
+        return render_template('index.html', my_name=MY_NAME.split('.')[0], users=users, user=user, messages=messages)
 
 
 @app.route("/<id>", methods=["POST"])
