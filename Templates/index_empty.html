@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDCHAT</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <!--<link rel="stylesheet" href="..\Static\css\style.css">-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <section class="main">
+        <section class="list_friends">
+            <ul>
+                {% for u in users %}
+                    <a href="{{url_for('homepage', id=u.id)}}">
+                        <li>
+                            <h4>{{u.name.split('.')[0]}}</h4>
+                            {% if u.status == 1 %}
+                                <p><b>•</b> Online</p>
+                            {% else %}
+                                <p><b id="offline">•</b> Offline</p>
+                            {% endif %}
+                        </li>
+                    </a>
+                {%endfor%}
+            </ul>
+        </section>
+
+        <section class="main_messages">
+            Selecione
+        </section>
+
+    </section>
+
+</body>
+</html>

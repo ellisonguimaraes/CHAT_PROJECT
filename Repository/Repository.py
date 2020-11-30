@@ -90,8 +90,8 @@ class MessageRepository:
     def save(message):
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO Message (msg, date, id_user) VALUES (?, ?, ?)",
-                       (message.msg, message.date, message.id_user))
+        cursor.execute("INSERT INTO Message (msg, date, id_user, recv) VALUES (?, ?, ?, ?)",
+                       (message.msg, message.date, message.id_user, message.recv))
         conn.commit()
         conn.close()
 
@@ -107,7 +107,7 @@ class MessageRepository:
             cursor.execute("SELECT * FROM Message WHERE id_user = ?", (id,))
 
         for l in cursor.fetchall():
-            message = Message(l[0], l[1], l[2], l[3])
+            message = Message(l[0], l[1], l[2], l[3], l[4])
             all_messages.append(message)
 
         conn.close()
@@ -121,9 +121,9 @@ class MessageRepository:
 
         cursor.execute("""
             UPDATE Message
-            SET msg = ?, date = ?, id_user = ?
+            SET msg = ?, date = ?, id_user = ?, recv = ?
             WHERE id = ?
-        """, (message.msg, message.date, message.id_user, message.id))
+        """, (message.msg, message.date, message.id_user, message.recv, message.id))
 
         conn.commit()
         conn.close()
@@ -142,9 +142,10 @@ class MessageRepository:
 
 
 if __name__ == "__main__":
+    '''
     conn = sqlite3.connect("../database.db")
     cursor = conn.cursor()
-    '''
+
     cursor.execute("""
         CREATE TABLE User (
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -161,18 +162,19 @@ if __name__ == "__main__":
                 msg TEXT NOT NULL,
                 date DATE NOT NULL,
                 id_user INTEGER,
+                recv INTEGER,
                 FOREIGN KEY(id_user) REFERENCES User(id)
             );
     """)
-'''
-    '''
-    UserRepository.save(User(None, "rebeca", "192.168.1.150", 4890, 0))
     
-    UserRepository.save(User(None, "ellison", "192.168.1.101", 5050, 1))
-    
-    MessageRepository.save(Message(None, "Olá, tudo bem?", datetime.now(), 3))
-    MessageRepository.save(Message(None, "To bem sim!", datetime.now(), 1))
-    '''
+    UserRepository.save(User(None, "Rebeca", "192.168.1.150", 4890, 0))
+    UserRepository.save(User(None, "Ellison", "192.168.1.101", 5050, 1))
 
+    MessageRepository.save(Message(None, "Olá, tudo bem?", datetime.now(), 1, 1))
+    MessageRepository.save(Message(None, "To bem sim! e você?", datetime.now(), 1, 0))
+    MessageRepository.save(Message(None, "Estou bem :3", datetime.now(), 1, 1))
+    MessageRepository.save(Message(None, "Que ótimo!", datetime.now(), 1, 0))
+    
     conn.commit()
     conn.close()
+    '''
