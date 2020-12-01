@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SDCHAT</title>
+    <title>SDCHAT: Grupo Geral</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
-    <!--<link rel="stylesheet" href="..\Static\css\style.css">-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 </head>
@@ -12,8 +11,14 @@
 
     <section class="main">
         <section class="list_friends">
-            <h1 id="name">Olá {{my_name}}!</h1>
+            <h1 id="name">Olá {{user_local.name.split('.')[0]}}!</h1>
+
             <ul>
+                <a href="{{url_for('homepage')}}">
+                    <li id="active">
+                        <h4>Chat Geral</h4>
+                    </li>
+                </a>
                 {% if users|length > 0 %}
                     {% for u in users %}
                         <a href="{{url_for('homepage', id=u.id)}}">
@@ -33,9 +38,22 @@
             </ul>
         </section>
 
-        <section class="welcome">
-            <h2>Seja bem vindo <b>{{my_name}}</b>!</h2>
-            <h2></h2>
+        <section class="main_messages">
+            <section class="messages">
+                {% for m in messages[::-1] %}
+                <section class="message" id="{{'destinatario' if m.is_recv == 1 else 'remetente'}}">
+                    <h5>{{ m|get_name }} <span> ~ {{m.date[0:16]}}</span></h5> </h5>
+                    <p>{{m.msg}}</p>
+                </section>
+                {% endfor %}
+            </section>
+
+            <section class="float_box">
+                <form action="{{ url_for('send_message_group')}}" method="post">
+                    <input type="text" name="searchMessage" placeholder="Digite uma mensagem" required/>
+                    <button type="submit">Enviar</button>
+                </form>
+            </section>
         </section>
 
     </section>

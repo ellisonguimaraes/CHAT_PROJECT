@@ -1,11 +1,11 @@
 from zeroconf import Zeroconf, ServiceBrowser, ServiceListener
 from socket import inet_ntoa
-from Repository.Repository import UserRepository
-from Models.User import User
+from repository.repository import UserRepository
+from models.user import User
 
 
 class Listener(ServiceListener):
-    def update_service(self, zc: 'Zeroconf', type_: str, name: str) -> None:
+    def update_service(self, zc: 'zeroconf_files', type_: str, name: str) -> None:
         # Getter Service Info (ZeroConf)
         info_service = zc.get_service_info(type_, name)
 
@@ -22,7 +22,7 @@ class Listener(ServiceListener):
         # Database Update
         UserRepository.update(user)
 
-    def remove_service(self, zc: 'Zeroconf', type_: str, name: str):
+    def remove_service(self, zc: 'zeroconf_files', type_: str, name: str):
         print(f'Um serviço foi removido: Tipo: {type_} Nome: {name}')
 
         # Getter user with name
@@ -34,7 +34,7 @@ class Listener(ServiceListener):
         # Database Update
         UserRepository.update(user)
 
-    def add_service(self, zc: 'Zeroconf', type_: str, name: str):
+    def add_service(self, zc: 'zeroconf_files', type_: str, name: str):
         info_service = zc.get_service_info(type_, name)
         print("Um serviço foi ENCONTRADO:")
         self.print_info_service(info_service)
@@ -51,11 +51,12 @@ class Listener(ServiceListener):
             user.status = 1
             UserRepository.update(user)
 
-    def print_info_service(self, info_service):
+    @staticmethod
+    def print_info_service(info_service):
         print(f"Tipo: {info_service.type}\n"
               f"Name: {info_service.name}\n"
               f"IP: {str(inet_ntoa(info_service.addresses[0]))}:{info_service.port}\n"
-              f"*********************************\n\n")
+              f"*********************************\n")
 
 
 class ConfigureDiscovery:

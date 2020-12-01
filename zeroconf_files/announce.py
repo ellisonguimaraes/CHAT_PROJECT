@@ -14,9 +14,9 @@ class ConfigureAnnounce:
 
     def register_service(self):
         self.zeroconf.register_service(self.service_info)
-        print(f'Serviço Anunciado: {str(inet_ntoa(self.service_info.addresses[0]))}:{self.service_info.port}')
+        print(f'Serviço Anunciado: {str(inet_ntoa(self.service_info.addresses[0]))}:{self.service_info.port}\n')
 
     def unregister_service(self):
         self.zeroconf.unregister_service(self.service_info)
-        print(f'Serviço Removido: {str(inet_ntoa(self.service_info.addresses[0]))}:{self.service_info.port}')
+        print(f'Serviço Removido: {str(inet_ntoa(self.service_info.addresses[0]))}:{self.service_info.port}\n')
 

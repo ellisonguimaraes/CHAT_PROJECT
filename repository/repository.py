@@ -1,7 +1,6 @@
 import sqlite3
-from Models.User import User
-from Models.Message import Message
-from datetime import datetime
+from models.user import User
+from models.message import Message
 
 
 class UserRepository:
@@ -90,24 +89,22 @@ class MessageRepository:
     def save(message):
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO Message (msg, date, id_user, recv) VALUES (?, ?, ?, ?)",
-                       (message.msg, message.date, message.id_user, message.recv))
+        cursor.execute("INSERT INTO Message (msg, date, id_user, is_recv, is_group) VALUES (?, ?, ?, ?, ?)",
+                       (message.msg, message.date, message.id_user, message.is_recv, message.is_group))
+
         conn.commit()
         conn.close()
 
     @staticmethod
-    def get_all(id:None):
+    def get_all():
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
         all_messages = []
 
-        if id is None:
-            cursor.execute("SELECT * FROM Message;")
-        else:
-            cursor.execute("SELECT * FROM Message WHERE id_user = ?", (id,))
+        cursor.execute("SELECT * FROM Message;")
 
-        for l in cursor.fetchall():
-            message = Message(l[0], l[1], l[2], l[3], l[4])
+        for m in cursor.fetchall():
+            message = Message(m[0], m[1], m[2], m[3], m[4], m[5])
             all_messages.append(message)
 
         conn.close()
@@ -121,9 +118,9 @@ class MessageRepository:
 
         cursor.execute("""
             UPDATE Message
-            SET msg = ?, date = ?, id_user = ?, recv = ?
+            SET msg = ?, date = ?, id_user = ?, is_recv = ?, is_group = ?
             WHERE id = ?
-        """, (message.msg, message.date, message.id_user, message.recv, message.id))
+        """, (message.msg, message.date, message.id_user, message.recv, message.is_group, message.id))
 
         conn.commit()
         conn.close()
@@ -142,39 +139,34 @@ class MessageRepository:
 
 
 if __name__ == "__main__":
-
+    # Create Database
     conn = sqlite3.connect("../database.db")
     cursor = conn.cursor()
 
+    # Create table User
     cursor.execute("""
         CREATE TABLE User (
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR(200) NOT NULL,
+            name VARCHAR(200) NOT NULL UNIQUE,
             ip VARCHAR(30) NOT NULL,
             port INTEGER NOT NULL,
             status INTEGER NOT NULL
         );
     """)
 
+    # Create table Message
     cursor.execute("""
-            CREATE TABLE Message (
-                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                msg TEXT NOT NULL,
-                date DATE NOT NULL,
-                id_user INTEGER,
-                recv INTEGER,
-                FOREIGN KEY(id_user) REFERENCES User(id)
-            );
+        CREATE TABLE Message (
+            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            msg TEXT NOT NULL,
+            date DATE NOT NULL,
+            id_user INTEGER,
+            is_recv INTEGER NOT NULL,
+            is_group INTEGER NOT NULL,
+            FOREIGN KEY(id_user) REFERENCES User(id)
+        );
     """)
-    '''
-    UserRepository.save(User(None, "Rebeca", "192.168.1.150", 4890, 0))
-    UserRepository.save(User(None, "Ellison", "192.168.1.101", 5050, 1))
 
-    MessageRepository.save(Message(None, "Olá, tudo bem?", datetime.now(), 1, 1))
-    MessageRepository.save(Message(None, "To bem sim! e você?", datetime.now(), 1, 0))
-    MessageRepository.save(Message(None, "Estou bem :3", datetime.now(), 1, 1))
-    MessageRepository.save(Message(None, "Que ótimo!", datetime.now(), 1, 0))
-    
     conn.commit()
     conn.close()
-    '''
+
