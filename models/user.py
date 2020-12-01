@@ -1,4 +1,3 @@
-
 class User:
     def __init__(self, id, name, ip, port, status):
         self.id = id

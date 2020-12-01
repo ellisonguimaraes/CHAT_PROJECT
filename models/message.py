@@ -1,4 +1,3 @@
-
 class Message:
     def __init__(self, id, msg, date, id_user, is_recv, is_group=0):
         self.id = id

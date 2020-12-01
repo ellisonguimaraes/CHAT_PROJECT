@@ -1,6 +1,7 @@
 import sqlite3
 from models.user import User
 from models.message import Message
+from models.check_message import CheckMessage
 
 
 class UserRepository:
@@ -95,6 +96,8 @@ class MessageRepository:
         conn.commit()
         conn.close()
 
+        return cursor.lastrowid
+
     @staticmethod
     def get_all():
         conn = sqlite3.connect("database.db")
@@ -138,6 +141,60 @@ class MessageRepository:
         conn.close()
 
 
+class CheckMessageRepository:
+    @staticmethod
+    def save(check):
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO CheckMessage (id_user, id_message, is_check) VALUES (?, ?, ?)",
+                       (check.id_user, check.id_message, check.is_check))
+
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def get_all():
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+        all_checks = []
+
+        cursor.execute("SELECT * FROM CheckMessage;")
+
+        for m in cursor.fetchall():
+            check = CheckMessage(m[0], m[1], m[2], m[3])
+            all_checks.append(check)
+
+        conn.close()
+
+        return all_checks
+
+    @staticmethod
+    def update(check):
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            UPDATE CheckMessage
+            SET is_check = ?
+            WHERE id = ?
+        """, (check.is_check, check.id))
+
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def delete(id):
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            DELETE FROM CheckMessage
+            WHERE id = ?
+        """, (id,))
+
+        conn.commit()
+        conn.close()
+
+
 if __name__ == "__main__":
     # Create Database
     conn = sqlite3.connect("../database.db")
@@ -165,6 +222,18 @@ if __name__ == "__main__":
             is_group INTEGER NOT NULL,
             FOREIGN KEY(id_user) REFERENCES User(id)
         );
+    """)
+
+    # Create table CheckMessage
+    cursor.execute("""
+        CREATE TABLE CheckMessage (
+            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            id_user INTEGER NOT NULL,
+            id_message INTEGER NOT NULL,
+            is_check INTEGER NOT NULL,
+            FOREIGN KEY(id_user) REFERENCES User(id),
+            FOREIGN KEY(id_message) REFERENCES Message(id)
+        )
     """)
 
     conn.commit()

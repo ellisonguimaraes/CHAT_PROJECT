@@ -42,7 +42,12 @@
             <section class="messages">
                 {% for m in messages[::-1] %}
                 <section class="message" id="{{'destinatario' if m.is_recv == 1 else 'remetente'}}">
-                    <h5>{{ m|get_name }} <span> ~ {{m.date[0:16]}}</span></h5> </h5>
+                    <h5>{% if m.is_recv == 0 %}
+                            {{'*' if m|get_verification}}
+                        {%endif%}
+                        {{ m|get_name }}
+                        <span> ~ {{m.date[0:16]}}</span>
+                    </h5>
                     <p>{{m.msg}}</p>
                 </section>
                 {% endfor %}
